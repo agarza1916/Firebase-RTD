@@ -1,24 +1,61 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Firebase_RTD.MainPage">
+<ContentPage
+    x:Class="Firebase_RTD.MainPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:Firebase_RTD.ViewModels">
+
+    <ContentPage.BindingContext>
+        <vm:MessagesViewModel />
+    </ContentPage.BindingContext>
 
     <StackLayout>
-        <Frame BackgroundColor="#2196F3" Padding="24" CornerRadius="0">
-            <Label Text="Welcome to Xamarin.Forms!" HorizontalTextAlignment="Center" TextColor="White" FontSize="36"/>
-        </Frame>
-        <Label Text="Start developing now" FontSize="Title" Padding="30,10,30,10"/>
-        <Label Text="Make changes to your XAML file and save to see your UI update in the running app with XAML Hot Reload. Give it a try!" FontSize="16" Padding="30,0,30,0"/>
-        <Label FontSize="16" Padding="30,24,30,0">
-            <Label.FormattedText>
-                <FormattedString>
-                    <FormattedString.Spans>
-                        <Span Text="Learn more at "/>
-                        <Span Text="https://aka.ms/xamarin-quickstart" FontAttributes="Bold"/>
-                    </FormattedString.Spans>
-                </FormattedString>
-            </Label.FormattedText>
-        </Label>
+        <StackLayout>
+            <StackLayout HorizontalOptions="Center" VerticalOptions="Start">
+
+                <Label
+                    Margin="0,0,0,10"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    HorizontalTextAlignment="Center"
+                    Text="Firebase Realtime Database"
+                    TextColor="Gray" />
+                <Entry x:Name="txtId" Placeholder="ID" />
+                <Entry x:Name="txtName" Placeholder="Enter Name" />
+                <StackLayout HorizontalOptions="CenterAndExpand" Orientation="Horizontal">
+                    <Button
+                        x:Name="btnAdd"
+                        Clicked="btnAdd_Clicked"
+                        Text="Add"
+                        WidthRequest="200" />
+                    <Button
+                        x:Name="btnRetrive"
+                        Clicked="btnRetrive_Clicked"
+                        Text="Retrive"
+                        WidthRequest="200" />
+                </StackLayout>
+                <StackLayout HorizontalOptions="CenterAndExpand" Orientation="Horizontal">
+                    <Button
+                        x:Name="btnUpdate"
+                        Clicked="btnUpdate_Clicked"
+                        Text="Update"
+                        WidthRequest="200" />
+                    <Button
+                        x:Name="btnDelete"
+                        Clicked="btnDelete_Clicked"
+                        Text="Delete"
+                        WidthRequest="200" />
+                </StackLayout>
+
+                <ListView ItemsSource="{Binding Messages,Mode=TwoWay}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell Text="{Binding MessageContent}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+        </StackLayout>
     </StackLayout>
 
 </ContentPage>
