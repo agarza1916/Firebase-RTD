@@ -37,8 +37,22 @@ namespace Firebase_RTD.ViewModels
         {
             firebase.Child("Messages").AsObservable<Message>().Subscribe(data =>
              {
+                 if (data.EventType == Firebase.Database.Streaming.FirebaseEventType.Delete)
+                 {
+                     deleteItem(data.Object);
+                 }
+                 else if(data.EventType == Firebase.Database.Streaming.FirebaseEventType.InsertOrUpdate)
+                 {
+                     if (Messages.Any(x => x.MessageId == data.Object.MessageId))
+                     {
+                         updateItem(data.Object);
+                     }
+                     else
+                     {
+                         addItem(data.Object);
+                     }
+                 }
                  Debug.WriteLine(JsonConvert.SerializeObject(data.Object));
-                 addItem(data.Object);
              });
         }
 
@@ -60,6 +74,40 @@ namespace Firebase_RTD.ViewModels
                 Debug.WriteLine("ERROR:" + ex.Message);
             }
         }
+
+        private void deleteItem(Message item)
+        {
+            try
+            {
+                var newList = new List<Message>();
+                var itemToDelete = Messages.FirstOrDefault(x => x.MessageId == item.MessageId);
+                Messages.Remove(itemToDelete);
+                newList.AddRange(Messages);
+                Messages = newList;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ERROR:" + ex.Message);
+            }
+        }
+
+        private void updateItem(Message item)
+        {
+            try
+            {
+                var newList = new List<Message>();
+                var itemToUpdate = Messages.FirstOrDefault(x => x.MessageId == item.MessageId);
+                itemToUpdate.MessageContent = item.MessageContent;
+                newList.AddRange(Messages);
+                Messages = newList;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ERROR:" + ex.Message);
+            }
+        }
+
+
         public async Task<List<Message>> GetAllMessages()
         {
             Messages= (await firebase
